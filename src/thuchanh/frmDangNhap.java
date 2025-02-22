@@ -462,8 +462,7 @@ public class frmDangNhap extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonchiaAncestorMoved
 
     private void buttonbangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonbangActionPerformed
-    
-try {
+   try {
     String equation = txtResult.getText().trim();
     String[] parts = equation.split("\\s+"); 
 
@@ -471,7 +470,6 @@ try {
         txtResult.setText("Error");
         return;
     }
-
     List<Double> numbers = new ArrayList<>();
     List<String> operators = new ArrayList<>();
 
@@ -491,8 +489,6 @@ try {
             operators.add(parts[i]);
         }
     }
-
-  
     for (int i = 0; i < operators.size(); i++) {
         if (operators.get(i).equals("*") || operators.get(i).equals("/")) {
             double num1 = numbers.get(i);
@@ -508,15 +504,12 @@ try {
                 }
                 result = num1 / num2;
             }
-
             numbers.set(i, result);
             numbers.remove(i + 1);
             operators.remove(i);
-            i--; 
+            i--;
         }
     }
-
-   
     while (!operators.isEmpty()) {
         double num1 = numbers.remove(0);
         double num2 = numbers.remove(0);
@@ -524,10 +517,7 @@ try {
         double result = op.equals("+") ? num1 + num2 : num1 - num2;
         numbers.add(0, result);
     }
-
     double finalResult = numbers.get(0);
-
-   
     String resultText = (finalResult % 1 == 0) ? String.valueOf((int) finalResult) : String.valueOf(finalResult);
     txtResult.setText(equation + " = " + resultText);
     resultDisplayed = true;
@@ -538,7 +528,6 @@ try {
 } catch (Exception e) {
     txtResult.setText("Error");
 }
-
 
     }//GEN-LAST:event_buttonbangActionPerformed
 
