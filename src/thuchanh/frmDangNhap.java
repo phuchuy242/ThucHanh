@@ -511,7 +511,18 @@ public class frmDangNhap extends javax.swing.JFrame {
     }//GEN-LAST:event_buttontruActionPerformed
 
     private void buttonmu2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonmu2ActionPerformed
-        
+        try {
+            double value = Double.parseDouble(txtResult.getText());  
+            value = Math.pow(value, 2);  
+            txtResult.setText(value + " ^ 2 = " + value);  
+
+            resultDisplayed = true;
+            String history = TextAreaLichsu.getText();
+            history += value + " ^ 2 = " + value + "\n";  
+            TextAreaLichsu.setText(history);  
+        } catch (Exception e) {
+            txtResult.setText("Error");  
+        }
     }//GEN-LAST:event_buttonmu2ActionPerformed
 
     private void buttonphansoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonphansoActionPerformed
@@ -533,7 +544,17 @@ public class frmDangNhap extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonphansoActionPerformed
 
     private void buttonphantramActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonphantramActionPerformed
-        
+        try {
+            double value = Double.parseDouble(txtResult.getText());  
+            value = value / 100;  
+            txtResult.setText(value + " % = " + value);  
+            resultDisplayed = true;
+            String history = TextAreaLichsu.getText();
+            history += value + " % = " + value + "\n";  
+            TextAreaLichsu.setText(history);  
+        } catch (Exception e) {
+            txtResult.setText("Error");  
+        }
     }//GEN-LAST:event_buttonphantramActionPerformed
 
     private void buttonxoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonxoaActionPerformed
@@ -541,7 +562,12 @@ public class frmDangNhap extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonxoaActionPerformed
 
     private void TextAreaLichsuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TextAreaLichsuMouseClicked
-        
+        String selectedHistory = TextAreaLichsu.getSelectedText();
+    
+        if (selectedHistory != null && !selectedHistory.trim().isEmpty()) {
+            txtResult.setText(selectedHistory.trim()); 
+            resultDisplayed = false;  
+        }
     }//GEN-LAST:event_TextAreaLichsuMouseClicked
 
     private void txtResultActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtResultActionPerformed
