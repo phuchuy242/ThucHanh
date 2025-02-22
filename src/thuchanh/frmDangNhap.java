@@ -549,15 +549,34 @@ public class frmDangNhap extends javax.swing.JFrame {
     }//GEN-LAST:event_txtResultActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        
+         try (BufferedWriter writer = new BufferedWriter(new FileWriter("dulieu.txt", true))) {
+        String data = TextAreaLichsu.getText();
+        writer.write(data);
+        writer.newLine(); 
+        JOptionPane.showMessageDialog(this, "Lưu dữ liệu thành công!");
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "Lỗi khi lưu dữ liệu: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-          
+          try {
+        Files.write(Paths.get("dulieu.txt"), new byte[0]);
+        TextAreaLichsu.setText("");
+        JOptionPane.showMessageDialog(this, "Xóa toàn bộ dữ liệu thành công!");
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "Lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void buttoncapnhatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttoncapnhatActionPerformed
-         
+         try {
+             var lines = Files.readAllLines(Paths.get("dulieu.txt"));
+        TextAreaLichsu.setText(String.join("\n", lines));
+        JOptionPane.showMessageDialog(this, "Tải dữ liệu thành công!");
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "Lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_buttoncapnhatActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
