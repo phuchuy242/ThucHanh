@@ -5,7 +5,7 @@
 package thuchanh;
 
 import thuchanh.frmDoDai;
-import java.awt.List;
+//import java.awt.List;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -16,6 +16,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import thuchanh.frmKhoiLuong;
+import java.util.ArrayList;
+import java.util.List;
+
 
 
 /**
@@ -445,50 +448,83 @@ public class frmDangNhap extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonchiaAncestorMoved
 
     private void buttonbangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonbangActionPerformed
-        // TODO add your handling code here:
-         try {
-        String equation = txtResult.getText();
-        String[] parts = equation.split(" ");
     
-        double firstValue = Double.parseDouble(parts[0]);  
-        double secondValue = Double.parseDouble(parts[2]); 
-        String operator = parts[1];  
+try {
+    String equation = txtResult.getText().trim();
+    String[] parts = equation.split("\\s+"); 
 
-        double result = 0;
+    if (parts.length % 2 == 0) { 
+        txtResult.setText("Error");
+        return;
+    }
 
-        switch (operator) {
-            case "+":
-                result = firstValue + secondValue;
-                break;
-            case "-":
-                result = firstValue - secondValue;
-                break;
-            case "*":
-                result = firstValue * secondValue;
-                break;
-            case "/":
-                if (secondValue != 0) {
-                    result = firstValue / secondValue;
-                } else {
+    List<Double> numbers = new ArrayList<>();
+    List<String> operators = new ArrayList<>();
+
+    for (int i = 0; i < parts.length; i++) {
+        if (i % 2 == 0) {
+            try {
+                numbers.add(Double.parseDouble(parts[i])); 
+            } catch (NumberFormatException e) {
+                txtResult.setText("Error");
+                return;
+            }
+        } else {
+            if (!parts[i].matches("[+\\-*/]")) { 
+                txtResult.setText("Error");
+                return;
+            }
+            operators.add(parts[i]);
+        }
+    }
+
+  
+    for (int i = 0; i < operators.size(); i++) {
+        if (operators.get(i).equals("*") || operators.get(i).equals("/")) {
+            double num1 = numbers.get(i);
+            double num2 = numbers.get(i + 1);
+            double result;
+
+            if (operators.get(i).equals("*")) {
+                result = num1 * num2;
+            } else {
+                if (num2 == 0) {
                     txtResult.setText("Error");
                     return;
                 }
-                break;
-            default:
-                txtResult.setText("Error");
-                return;
-        }
-        
-        String resultText = (result % 1 == 0) ? String.valueOf((int) result) : String.valueOf(result);
-        txtResult.setText(equation + " = " + resultText);
-        resultDisplayed = true;
+                result = num1 / num2;
+            }
 
-        String history = TextAreaLichsu.getText();
-        history += equation + " = " + resultText + "\n";  
-        TextAreaLichsu.setText(history);
-    } catch (Exception e) {
-        txtResult.setText("Error");
+            numbers.set(i, result);
+            numbers.remove(i + 1);
+            operators.remove(i);
+            i--; 
+        }
     }
+
+   
+    while (!operators.isEmpty()) {
+        double num1 = numbers.remove(0);
+        double num2 = numbers.remove(0);
+        String op = operators.remove(0);
+        double result = op.equals("+") ? num1 + num2 : num1 - num2;
+        numbers.add(0, result);
+    }
+
+    double finalResult = numbers.get(0);
+
+   
+    String resultText = (finalResult % 1 == 0) ? String.valueOf((int) finalResult) : String.valueOf(finalResult);
+    txtResult.setText(equation + " = " + resultText);
+    resultDisplayed = true;
+
+    String history = TextAreaLichsu.getText();
+    history += equation + " = " + resultText + "\n";
+    TextAreaLichsu.setText(history);
+} catch (Exception e) {
+    txtResult.setText("Error");
+}
+
 
     }//GEN-LAST:event_buttonbangActionPerformed
 
