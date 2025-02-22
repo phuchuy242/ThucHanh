@@ -20,6 +20,8 @@ public class frmDoDai extends javax.swing.JFrame {
         conversionRates.put("Kilometers", 1_000_000.0);
         conversionRates.put("inches", 25.4);
         conversionRates.put("Feet", 304.8);
+        conversionRates.put("Hectares", 10_000.0);
+
     }
     
     public frmDoDai() {
