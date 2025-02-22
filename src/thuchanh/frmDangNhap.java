@@ -4,6 +4,7 @@
  */
 package thuchanh;
 
+import thuchanh.frmDoDai;
 import java.awt.List;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -14,6 +15,7 @@ import javax.swing.JOptionPane;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import thuchanh.frmKhoiLuong;
 
 
 /**
@@ -606,11 +608,11 @@ public class frmDangNhap extends javax.swing.JFrame {
     }//GEN-LAST:event_buttoncapnhatActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        
+        new frmDoDai().setVisible(true);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        
+        new frmKhoiLuong().setVisible(true);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     /**
