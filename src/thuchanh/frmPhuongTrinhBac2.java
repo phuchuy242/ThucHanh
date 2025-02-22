@@ -15,9 +15,12 @@ private javax.swing.JTextField selectedField;
 
     public frmPhuongTrinhBac2() {
         initComponents();
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
         txtResultA.addFocusListener(new java.awt.event.FocusAdapter() {
     public void focusGained(java.awt.event.FocusEvent evt) {
         selectedField = txtResultA;
+        
     }
 });
 
