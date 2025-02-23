@@ -290,6 +290,15 @@ public class frmDangNhap extends javax.swing.JFrame {
 
         TextAreaLichsu.setColumns(20);
         TextAreaLichsu.setRows(5);
+        TextAreaLichsu.addAncestorListener(new javax.swing.event.AncestorListener() {
+            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
+                TextAreaLichsuAncestorAdded(evt);
+            }
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+            }
+            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
+            }
+        });
         TextAreaLichsu.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 TextAreaLichsuMouseClicked(evt);
@@ -465,33 +474,38 @@ public class frmDangNhap extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonchiaAncestorMoved
 
     private void buttonbangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonbangActionPerformed
-   try {
+try {
     String equation = txtResult.getText().trim();
     String[] parts = equation.split("\\s+"); 
 
-    if (parts.length % 2 == 0) { 
+    if (parts.length == 0) {
         txtResult.setText("Error");
         return;
     }
+
     List<Double> numbers = new ArrayList<>();
     List<String> operators = new ArrayList<>();
 
     for (int i = 0; i < parts.length; i++) {
-        if (i % 2 == 0) {
-            try {
-                numbers.add(Double.parseDouble(parts[i])); 
-            } catch (NumberFormatException e) {
-                txtResult.setText("Error");
-                return;
+        if (parts[i].matches("-?\\d+(\\.\\d+)?")) { // Kiểm tra có phải số không
+            double num = Double.parseDouble(parts[i]);
+
+            // Nếu số tiếp theo là "^2" thì tính bình phương
+            if (i + 1 < parts.length && parts[i + 1].equals("^2")) {
+                num = Math.pow(num, 2);
+                i++; // Bỏ qua "^2"
             }
-        } else {
-            if (!parts[i].matches("[+\\-*/]")) { 
-                txtResult.setText("Error");
-                return;
-            }
+
+            numbers.add(num);
+        } else if (parts[i].matches("[+\\-*/]")) { // Nếu là toán tử +, -, *, /
             operators.add(parts[i]);
+        } else {
+            txtResult.setText("Error"); // Nếu có ký tự lạ
+            return;
         }
     }
+
+    // Xử lý nhân và chia trước
     for (int i = 0; i < operators.size(); i++) {
         if (operators.get(i).equals("*") || operators.get(i).equals("/")) {
             double num1 = numbers.get(i);
@@ -502,7 +516,7 @@ public class frmDangNhap extends javax.swing.JFrame {
                 result = num1 * num2;
             } else {
                 if (num2 == 0) {
-                    txtResult.setText("Error");
+                    txtResult.setText("Error (Divide by zero)");
                     return;
                 }
                 result = num1 / num2;
@@ -510,9 +524,11 @@ public class frmDangNhap extends javax.swing.JFrame {
             numbers.set(i, result);
             numbers.remove(i + 1);
             operators.remove(i);
-            i--;
+            i--; // Lùi lại để kiểm tra tiếp
         }
     }
+
+    // Xử lý cộng và trừ sau
     while (!operators.isEmpty()) {
         double num1 = numbers.remove(0);
         double num2 = numbers.remove(0);
@@ -520,14 +536,17 @@ public class frmDangNhap extends javax.swing.JFrame {
         double result = op.equals("+") ? num1 + num2 : num1 - num2;
         numbers.add(0, result);
     }
+
     double finalResult = numbers.get(0);
     String resultText = (finalResult % 1 == 0) ? String.valueOf((int) finalResult) : String.valueOf(finalResult);
     txtResult.setText(equation + " = " + resultText);
     resultDisplayed = true;
 
+    // Lưu vào lịch sử
     String history = TextAreaLichsu.getText();
     history += equation + " = " + resultText + "\n";
     TextAreaLichsu.setText(history);
+
 } catch (Exception e) {
     txtResult.setText("Error");
 }
@@ -551,40 +570,17 @@ public class frmDangNhap extends javax.swing.JFrame {
     }//GEN-LAST:event_buttoncongActionPerformed
 
     private void buttontruActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttontruActionPerformed
-         txtResult.setText(txtResult.getText() + " - ");
+        txtResult.setText(txtResult.getText() + " - ");
     }//GEN-LAST:event_buttontruActionPerformed
 
     private void buttonmu2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonmu2ActionPerformed
-        try {
-            double value = Double.parseDouble(txtResult.getText());  
-            value = Math.pow(value, 2);  
-            txtResult.setText(value + " ^ 2 = " + value);  
+        txtResult.setText(txtResult.getText() + " ^2 ");
 
-            resultDisplayed = true;
-            String history = TextAreaLichsu.getText();
-            history += value + " ^ 2 = " + value + "\n";  
-            TextAreaLichsu.setText(history);  
-        } catch (Exception e) {
-            txtResult.setText("Error");  
-        }
     }//GEN-LAST:event_buttonmu2ActionPerformed
 
     private void buttonphansoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonphansoActionPerformed
-        try {
-            double value = Double.parseDouble(txtResult.getText());
-            if (value != 0) {
-                value = 1 / value;  
-                txtResult.setText("1 / " + value + " = " + value);
-                resultDisplayed = true;
-                String history = TextAreaLichsu.getText();
-                history += "1 / " + value + " = " + value + "\n";  
-                TextAreaLichsu.setText(history);  
-            } else {
-                txtResult.setText("Error");
-            }
-        } catch (Exception e) {
-            txtResult.setText("Error");
-        }
+                 txtResult.setText(txtResult.getText() + " / ");
+
     }//GEN-LAST:event_buttonphansoActionPerformed
 
     private void buttonphantramActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonphantramActionPerformed
@@ -619,21 +615,33 @@ public class frmDangNhap extends javax.swing.JFrame {
     }//GEN-LAST:event_txtResultActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-   try (BufferedWriter writer = new BufferedWriter(new FileWriter("dulieu.txt", true))) {
-    String data = TextAreaLichsu.getText();
-    LocalDateTime now = LocalDateTime.now();
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm:ss a", Locale.ENGLISH);
-    String timestamp = now.format(formatter);
-    String[] lines = data.split("\n");
-    for (String line : lines) {
-        writer.write("[" + timestamp + "] " + line);
-        writer.newLine();
-    }
-    JOptionPane.showMessageDialog(this, "Lưu dữ liệu thành công!");
-} catch (IOException e) {
-    JOptionPane.showMessageDialog(this, "Lỗi khi lưu dữ liệu: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-}
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("dulieu.txt", false))) {
+        String data = TextAreaLichsu.getText().trim();
+        if (data.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Không có dữ liệu để lưu!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm:ss a", Locale.ENGLISH);
+        String timestamp = now.format(formatter);
+
+        String[] lines = data.split("\n");
+        for (String line : lines) {
+            if (!line.matches("^\\[\\d{2}/\\d{2}/\\d{4} \\d{2}:\\d{2}:\\d{2} (AM|PM)] .*")) { 
+                // Nếu dòng chưa có timestamp -> Thêm timestamp
+                writer.write("[" + timestamp + "] " + line);
+            } else {
+                // Nếu dòng đã có timestamp -> Ghi nguyên văn
+                writer.write(line);
+            }
+            writer.newLine();
+        }
+        writer.newLine();
+        JOptionPane.showMessageDialog(this, "Lưu dữ liệu thành công!");
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "Lỗi khi lưu dữ liệu: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -667,6 +675,10 @@ public class frmDangNhap extends javax.swing.JFrame {
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         new frmPhuongTrinhBac2().setVisible(true);
     }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void TextAreaLichsuAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_TextAreaLichsuAncestorAdded
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TextAreaLichsuAncestorAdded
 
     /**
      * @param args the command line arguments
