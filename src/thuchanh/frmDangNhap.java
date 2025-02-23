@@ -475,81 +475,126 @@ public class frmDangNhap extends javax.swing.JFrame {
 
     private void buttonbangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonbangActionPerformed
 try {
-    String equation = txtResult.getText().trim();
-    String[] parts = equation.split("\\s+"); 
+        String equation = txtResult.getText().trim();
+        String[] parts = equation.split("\\s+");
 
-    if (parts.length == 0) {
-        txtResult.setText("Error");
-        return;
-    }
-
-    List<Double> numbers = new ArrayList<>();
-    List<String> operators = new ArrayList<>();
-
-    for (int i = 0; i < parts.length; i++) {
-        if (parts[i].matches("-?\\d+(\\.\\d+)?")) { // Kiểm tra có phải số không
-            double num = Double.parseDouble(parts[i]);
-
-            // Nếu số tiếp theo là "^2" thì tính bình phương
-            if (i + 1 < parts.length && parts[i + 1].equals("^2")) {
-                num = Math.pow(num, 2);
-                i++; // Bỏ qua "^2"
-            }
-
-            numbers.add(num);
-        } else if (parts[i].matches("[+\\-*/]")) { // Nếu là toán tử +, -, *, /
-            operators.add(parts[i]);
-        } else {
-            txtResult.setText("Error"); // Nếu có ký tự lạ
+        if (parts.length == 0) {
+            txtResult.setText("Error");
             return;
         }
-    }
 
-    // Xử lý nhân và chia trước
-    for (int i = 0; i < operators.size(); i++) {
-        if (operators.get(i).equals("*") || operators.get(i).equals("/")) {
-            double num1 = numbers.get(i);
-            double num2 = numbers.get(i + 1);
-            double result;
+        List<Double> numbers = new ArrayList<>();
+        List<String> operators = new ArrayList<>();
 
-            if (operators.get(i).equals("*")) {
-                result = num1 * num2;
-            } else {
-                if (num2 == 0) {
+        for (int i = 0; i < parts.length; i++) {
+            if (parts[i].matches("-?\\d+(\\.\\d+)?")) { // Kiểm tra có phải số không
+                double num = Double.parseDouble(parts[i]);
+
+                // Kiểm tra nếu số tiếp theo là "^2" thì bình phương
+                if (i + 1 < parts.length && parts[i + 1].equals("^2")) {
+                    num = Math.pow(num, 2);
+                    i++; // Bỏ qua "^2"
+                }
+                        if (i + 1 < parts.length && parts[i + 1].equals("%")) {
+                num = num / 100;
+                i++; // Bỏ qua "%"
+            }
+
+            else if (i + 1 < parts.length && parts[i + 1].equals("1/x")) {
+                if (num == 0) {
                     txtResult.setText("Error (Divide by zero)");
                     return;
                 }
-                result = num1 / num2;
+                num = 1 / num;
+                i++; // Bỏ qua "1/x"
             }
-            numbers.set(i, result);
-            numbers.remove(i + 1);
-            operators.remove(i);
-            i--; // Lùi lại để kiểm tra tiếp
+
+                numbers.add(num);
+            } else if (parts[i].matches("[+\\-*/]")) {
+                if (i == 0 || i == parts.length - 1) { 
+                    txtResult.setText("Error");
+                    return;
+                }
+                operators.add(parts[i]);
+            } else {
+                txtResult.setText("Error");
+                return;
+            }
         }
+
+        for (int i = 0; i < operators.size(); i++) {
+            if (operators.get(i).equals("*") || operators.get(i).equals("/")) {
+                double num1 = numbers.get(i);
+                double num2 = numbers.get(i + 1);
+                double result;
+
+                if (operators.get(i).equals("*")) {
+                    result = num1 * num2;
+                } else {
+                    if (num2 == 0) {
+                        txtResult.setText("Error (Divide by zero)");
+                        return;
+                    }
+                    result = num1 / num2;
+                }
+                numbers.set(i, result);
+                numbers.remove(i + 1);
+                operators.remove(i);
+                i--;
+            }
+        }
+
+        while (!operators.isEmpty()) {
+            double num1 = numbers.remove(0);
+            double num2 = numbers.remove(0);
+            String op = operators.remove(0);
+            double result = op.equals("+") ? num1 + num2 : num1 - num2;
+            numbers.add(0, result);
+        }
+
+        double finalResult = numbers.get(0);
+        String resultText = (finalResult % 1 == 0) ? String.valueOf((int) finalResult) : String.valueOf(finalResult);
+        txtResult.setText(equation + " = " + resultText);
+        resultDisplayed = true;
+
+        String history = TextAreaLichsu.getText();
+        history += equation + " = " + resultText + "\n";
+        TextAreaLichsu.setText(history);
+
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter("dulieu.txt", true))) { 
+        String data = equation + " = " + resultText;
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy - hh:mm:ss a", Locale.ENGLISH);
+        String timestamp = now.format(formatter);
+
+        writer.write("[" + timestamp + "] : " + data);
+        writer.newLine();
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "Lỗi khi lưu dữ liệu: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+    }
+    try {
+        var lines = Files.readAllLines(Paths.get("dulieu.txt"));
+        if (!lines.isEmpty()) { 
+            TextAreaLichsu.setText(String.join("\n", lines));
+        }
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "Lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
     }
 
-    // Xử lý cộng và trừ sau
-    while (!operators.isEmpty()) {
-        double num1 = numbers.remove(0);
-        double num2 = numbers.remove(0);
-        String op = operators.remove(0);
-        double result = op.equals("+") ? num1 + num2 : num1 - num2;
-        numbers.add(0, result);
+
+
+        try {
+            var lines = Files.readAllLines(Paths.get("dulieu.txt"));
+            if (!lines.isEmpty()) { 
+                TextAreaLichsu.setText(String.join("\n", lines));
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+
+    } catch (Exception e) {
+        txtResult.setText("Error");
     }
-
-    double finalResult = numbers.get(0);
-    String resultText = (finalResult % 1 == 0) ? String.valueOf((int) finalResult) : String.valueOf(finalResult);
-    txtResult.setText(equation + " = " + resultText);
-    resultDisplayed = true;
-
-    // Lưu vào lịch sử
-    String history = TextAreaLichsu.getText();
-    history += equation + " = " + resultText + "\n";
-    TextAreaLichsu.setText(history);
-
-} catch (Exception e) {
-    txtResult.setText("Error");
-}
 
     }//GEN-LAST:event_buttonbangActionPerformed
 
