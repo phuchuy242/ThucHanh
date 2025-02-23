@@ -5,7 +5,7 @@
 package thuchanh;
 
 import thuchanh.frmDoDai;
-import java.awt.List;
+//import java.awt.List;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -14,8 +14,14 @@ import java.nio.file.Paths;
 import javax.swing.JOptionPane;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import thuchanh.frmKhoiLuong;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 
 
 /**
@@ -75,9 +81,7 @@ public class frmDangNhap extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         TextAreaLichsu = new javax.swing.JTextArea();
-        jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
-        buttoncapnhat = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -284,6 +288,15 @@ public class frmDangNhap extends javax.swing.JFrame {
 
         TextAreaLichsu.setColumns(20);
         TextAreaLichsu.setRows(5);
+        TextAreaLichsu.addAncestorListener(new javax.swing.event.AncestorListener() {
+            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
+                TextAreaLichsuAncestorAdded(evt);
+            }
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+            }
+            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
+            }
+        });
         TextAreaLichsu.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 TextAreaLichsuMouseClicked(evt);
@@ -291,24 +304,10 @@ public class frmDangNhap extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(TextAreaLichsu);
 
-        jButton2.setText("Lưu");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
-        jButton3.setText("Xóa ");
+        jButton3.setText("Reset");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
-            }
-        });
-
-        buttoncapnhat.setText("Cập nhật");
-        buttoncapnhat.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttoncapnhatActionPerformed(evt);
             }
         });
 
@@ -317,31 +316,23 @@ public class frmDangNhap extends javax.swing.JFrame {
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(buttoncapnhat)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton3)))
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton3)
+                .addGap(21, 21, 21))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3)
-                    .addComponent(buttoncapnhat))
+                    .addComponent(jLabel1)
+                    .addComponent(jButton3))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -365,9 +356,9 @@ public class frmDangNhap extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu1);
 
-        jMenu2.setText("Phương trình");
+        jMenu2.setText("Phương Trình");
 
-        jMenuItem3.setText("Phương trình bậc 2");
+        jMenuItem3.setText("Phương Trình Bậc 2");
         jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem3ActionPerformed(evt);
@@ -459,47 +450,124 @@ public class frmDangNhap extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonchiaAncestorMoved
 
     private void buttonbangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonbangActionPerformed
-        // TODO add your handling code here:
-         try {
-        String equation = txtResult.getText();
-        String[] parts = equation.split(" ");
-    
-        double firstValue = Double.parseDouble(parts[0]);  
-        double secondValue = Double.parseDouble(parts[2]); 
-        String operator = parts[1];  
+        try {
+        String equation = txtResult.getText().trim();
+        String[] parts = equation.split("\\s+");
 
-        double result = 0;
+        if (parts.length == 0) {
+            txtResult.setText("Error");
+            return;
+        }
 
-        switch (operator) {
-            case "+":
-                result = firstValue + secondValue;
-                break;
-            case "-":
-                result = firstValue - secondValue;
-                break;
-            case "*":
-                result = firstValue * secondValue;
-                break;
-            case "/":
-                if (secondValue != 0) {
-                    result = firstValue / secondValue;
-                } else {
+        List<Double> numbers = new ArrayList<>();
+        List<String> operators = new ArrayList<>();
+
+        for (int i = 0; i < parts.length; i++) {
+            if (parts[i].matches("-?\\d+(\\.\\d+)?")) { // Kiểm tra có phải số không
+                double num = Double.parseDouble(parts[i]);
+
+                // Kiểm tra nếu số tiếp theo là "^2" thì bình phương
+                if (i + 1 < parts.length && parts[i + 1].equals("^2")) {
+                    num = Math.pow(num, 2);
+                    i++; // Bỏ qua "^2"
+                }
+                        if (i + 1 < parts.length && parts[i + 1].equals("%")) {
+                num = num / 100;
+                i++; // Bỏ qua "%"
+            }
+
+            else if (i + 1 < parts.length && parts[i + 1].equals("1/x")) {
+                if (num == 0) {
+                    txtResult.setText("Error (Divide by zero)");
+                    return;
+                }
+                num = 1 / num;
+                i++; // Bỏ qua "1/x"
+            }
+
+                numbers.add(num);
+            } else if (parts[i].matches("[+\\-*/]")) {
+                if (i == 0 || i == parts.length - 1) { 
                     txtResult.setText("Error");
                     return;
                 }
-                break;
-            default:
+                operators.add(parts[i]);
+            } else {
                 txtResult.setText("Error");
                 return;
+            }
         }
-        
-        String resultText = (result % 1 == 0) ? String.valueOf((int) result) : String.valueOf(result);
+
+        for (int i = 0; i < operators.size(); i++) {
+            if (operators.get(i).equals("*") || operators.get(i).equals("/")) {
+                double num1 = numbers.get(i);
+                double num2 = numbers.get(i + 1);
+                double result;
+
+                if (operators.get(i).equals("*")) {
+                    result = num1 * num2;
+                } else {
+                    if (num2 == 0) {
+                        txtResult.setText("Error (Divide by zero)");
+                        return;
+                    }
+                    result = num1 / num2;
+                }
+                numbers.set(i, result);
+                numbers.remove(i + 1);
+                operators.remove(i);
+                i--;
+            }
+        }
+
+        while (!operators.isEmpty()) {
+            double num1 = numbers.remove(0);
+            double num2 = numbers.remove(0);
+            String op = operators.remove(0);
+            double result = op.equals("+") ? num1 + num2 : num1 - num2;
+            numbers.add(0, result);
+        }
+
+        double finalResult = numbers.get(0);
+        String resultText = (finalResult % 1 == 0) ? String.valueOf((int) finalResult) : String.valueOf(finalResult);
         txtResult.setText(equation + " = " + resultText);
         resultDisplayed = true;
 
         String history = TextAreaLichsu.getText();
-        history += equation + " = " + resultText + "\n";  
+        history += equation + " = " + resultText + "\n";
         TextAreaLichsu.setText(history);
+
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter("dulieu.txt", true))) { 
+        String data = equation + " = " + resultText;
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy - hh:mm:ss a", Locale.ENGLISH);
+        String timestamp = now.format(formatter);
+
+        writer.write("[" + timestamp + "] : " + data);
+        writer.newLine();
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "Lỗi khi lưu dữ liệu: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+    }
+    try {
+        var lines = Files.readAllLines(Paths.get("dulieu.txt"));
+        if (!lines.isEmpty()) { 
+            TextAreaLichsu.setText(String.join("\n", lines));
+        }
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "Lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+    }
+
+
+
+        try {
+            var lines = Files.readAllLines(Paths.get("dulieu.txt"));
+            if (!lines.isEmpty()) { 
+                TextAreaLichsu.setText(String.join("\n", lines));
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+
     } catch (Exception e) {
         txtResult.setText("Error");
     }
@@ -523,54 +591,22 @@ public class frmDangNhap extends javax.swing.JFrame {
     }//GEN-LAST:event_buttoncongActionPerformed
 
     private void buttontruActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttontruActionPerformed
-         txtResult.setText(txtResult.getText() + " - ");
+        txtResult.setText(txtResult.getText() + " - ");
     }//GEN-LAST:event_buttontruActionPerformed
 
     private void buttonmu2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonmu2ActionPerformed
-        try {
-            double value = Double.parseDouble(txtResult.getText());  
-            value = Math.pow(value, 2);  
-            txtResult.setText(value + " ^ 2 = " + value);  
+        txtResult.setText(txtResult.getText() + " ^2 ");
 
-            resultDisplayed = true;
-            String history = TextAreaLichsu.getText();
-            history += value + " ^ 2 = " + value + "\n";  
-            TextAreaLichsu.setText(history);  
-        } catch (Exception e) {
-            txtResult.setText("Error");  
-        }
     }//GEN-LAST:event_buttonmu2ActionPerformed
 
     private void buttonphansoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonphansoActionPerformed
-        try {
-            double value = Double.parseDouble(txtResult.getText());
-            if (value != 0) {
-                value = 1 / value;  
-                txtResult.setText("1 / " + value + " = " + value);
-                resultDisplayed = true;
-                String history = TextAreaLichsu.getText();
-                history += "1 / " + value + " = " + value + "\n";  
-                TextAreaLichsu.setText(history);  
-            } else {
-                txtResult.setText("Error");
-            }
-        } catch (Exception e) {
-            txtResult.setText("Error");
-        }
+        txtResult.setText(txtResult.getText() + " / ");
+
     }//GEN-LAST:event_buttonphansoActionPerformed
 
     private void buttonphantramActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonphantramActionPerformed
-        try {
-            double value = Double.parseDouble(txtResult.getText());  
-            value = value / 100;  
-            txtResult.setText(value + " % = " + value);  
-            resultDisplayed = true;
-            String history = TextAreaLichsu.getText();
-            history += value + " % = " + value + "\n";  
-            TextAreaLichsu.setText(history);  
-        } catch (Exception e) {
-            txtResult.setText("Error");  
-        }
+        txtResult.setText(txtResult.getText() + " % ");
+
     }//GEN-LAST:event_buttonphantramActionPerformed
 
     private void buttonxoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonxoaActionPerformed
@@ -590,17 +626,6 @@ public class frmDangNhap extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtResultActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-         try (BufferedWriter writer = new BufferedWriter(new FileWriter("dulieu.txt", true))) {
-        String data = TextAreaLichsu.getText();
-        writer.write(data);
-        writer.newLine(); 
-        JOptionPane.showMessageDialog(this, "Lưu dữ liệu thành công!");
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "Lỗi khi lưu dữ liệu: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-    }
-    }//GEN-LAST:event_jButton2ActionPerformed
-
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
           try {
         Files.write(Paths.get("dulieu.txt"), new byte[0]);
@@ -610,16 +635,6 @@ public class frmDangNhap extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, "Lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
     }
     }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void buttoncapnhatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttoncapnhatActionPerformed
-         try {
-             var lines = Files.readAllLines(Paths.get("dulieu.txt"));
-        TextAreaLichsu.setText(String.join("\n", lines));
-        JOptionPane.showMessageDialog(this, "Tải dữ liệu thành công!");
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "Lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-    }
-    }//GEN-LAST:event_buttoncapnhatActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         new frmDoDai().setVisible(true);
@@ -632,6 +647,10 @@ public class frmDangNhap extends javax.swing.JFrame {
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         new frmPhuongTrinhBac2().setVisible(true);
     }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void TextAreaLichsuAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_TextAreaLichsuAncestorAdded
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TextAreaLichsuAncestorAdded
 
     /**
      * @param args the command line arguments
@@ -682,7 +701,6 @@ public class frmDangNhap extends javax.swing.JFrame {
     private javax.swing.JButton button8;
     private javax.swing.JButton button9;
     private javax.swing.JButton buttonbang;
-    private javax.swing.JButton buttoncapnhat;
     private javax.swing.JButton buttonchia;
     private javax.swing.JButton buttoncong;
     private javax.swing.JButton buttonmu2;
@@ -691,7 +709,6 @@ public class frmDangNhap extends javax.swing.JFrame {
     private javax.swing.JButton buttonphantram;
     private javax.swing.JButton buttontru;
     private javax.swing.JButton buttonxoa;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
