@@ -14,10 +14,13 @@ import java.nio.file.Paths;
 import javax.swing.JOptionPane;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import thuchanh.frmKhoiLuong;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 
 
@@ -616,14 +619,21 @@ public class frmDangNhap extends javax.swing.JFrame {
     }//GEN-LAST:event_txtResultActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-         try (BufferedWriter writer = new BufferedWriter(new FileWriter("dulieu.txt", true))) {
-        String data = TextAreaLichsu.getText();
-        writer.write(data);
-        writer.newLine(); 
-        JOptionPane.showMessageDialog(this, "Lưu dữ liệu thành công!");
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "Lỗi khi lưu dữ liệu: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+   try (BufferedWriter writer = new BufferedWriter(new FileWriter("dulieu.txt", true))) {
+    String data = TextAreaLichsu.getText();
+    LocalDateTime now = LocalDateTime.now();
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm:ss a", Locale.ENGLISH);
+    String timestamp = now.format(formatter);
+    String[] lines = data.split("\n");
+    for (String line : lines) {
+        writer.write("[" + timestamp + "] " + line);
+        writer.newLine();
     }
+    JOptionPane.showMessageDialog(this, "Lưu dữ liệu thành công!");
+} catch (IOException e) {
+    JOptionPane.showMessageDialog(this, "Lỗi khi lưu dữ liệu: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+}
+
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
