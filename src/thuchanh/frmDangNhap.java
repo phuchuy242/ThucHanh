@@ -81,9 +81,7 @@ public class frmDangNhap extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         TextAreaLichsu = new javax.swing.JTextArea();
-        jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
-        buttoncapnhat = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -306,24 +304,10 @@ public class frmDangNhap extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(TextAreaLichsu);
 
-        jButton2.setText("Lưu");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
-        jButton3.setText("Xóa ");
+        jButton3.setText("Reset");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
-            }
-        });
-
-        buttoncapnhat.setText("Cập nhật");
-        buttoncapnhat.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttoncapnhatActionPerformed(evt);
             }
         });
 
@@ -331,33 +315,23 @@ public class frmDangNhap extends javax.swing.JFrame {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(buttoncapnhat)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton3)))
                 .addContainerGap())
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3)
-                    .addComponent(buttoncapnhat))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabel1)
+                    .addComponent(jButton3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1))
         );
 
         jMenu1.setText("Đổi Đơn Vị");
@@ -629,17 +603,7 @@ try {
     }//GEN-LAST:event_buttonphansoActionPerformed
 
     private void buttonphantramActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonphantramActionPerformed
-        try {
-            double value = Double.parseDouble(txtResult.getText());  
-            value = value / 100;  
-            txtResult.setText(value + " % = " + value);  
-            resultDisplayed = true;
-            String history = TextAreaLichsu.getText();
-            history += value + " % = " + value + "\n";  
-            TextAreaLichsu.setText(history);  
-        } catch (Exception e) {
-            txtResult.setText("Error");  
-        }
+        txtResult.setText(txtResult.getText() + " % ");
     }//GEN-LAST:event_buttonphantramActionPerformed
 
     private void buttonxoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonxoaActionPerformed
@@ -659,36 +623,6 @@ try {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtResultActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter("dulieu.txt", false))) {
-        String data = TextAreaLichsu.getText().trim();
-        if (data.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Không có dữ liệu để lưu!", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm:ss a", Locale.ENGLISH);
-        String timestamp = now.format(formatter);
-
-        String[] lines = data.split("\n");
-        for (String line : lines) {
-            if (!line.matches("^\\[\\d{2}/\\d{2}/\\d{4} \\d{2}:\\d{2}:\\d{2} (AM|PM)] .*")) { 
-                // Nếu dòng chưa có timestamp -> Thêm timestamp
-                writer.write("[" + timestamp + "] " + line);
-            } else {
-                // Nếu dòng đã có timestamp -> Ghi nguyên văn
-                writer.write(line);
-            }
-            writer.newLine();
-        }
-        writer.newLine();
-        JOptionPane.showMessageDialog(this, "Lưu dữ liệu thành công!");
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "Lỗi khi lưu dữ liệu: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-    }
-    }//GEN-LAST:event_jButton2ActionPerformed
-
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
           try {
         Files.write(Paths.get("dulieu.txt"), new byte[0]);
@@ -698,16 +632,6 @@ try {
         JOptionPane.showMessageDialog(this, "Lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
     }
     }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void buttoncapnhatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttoncapnhatActionPerformed
-         try {
-             var lines = Files.readAllLines(Paths.get("dulieu.txt"));
-        TextAreaLichsu.setText(String.join("\n", lines));
-        JOptionPane.showMessageDialog(this, "Tải dữ liệu thành công!");
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "Lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-    }
-    }//GEN-LAST:event_buttoncapnhatActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         new frmDoDai().setVisible(true);
@@ -774,7 +698,6 @@ try {
     private javax.swing.JButton button8;
     private javax.swing.JButton button9;
     private javax.swing.JButton buttonbang;
-    private javax.swing.JButton buttoncapnhat;
     private javax.swing.JButton buttonchia;
     private javax.swing.JButton buttoncong;
     private javax.swing.JButton buttonmu2;
@@ -783,7 +706,6 @@ try {
     private javax.swing.JButton buttonphantram;
     private javax.swing.JButton buttontru;
     private javax.swing.JButton buttonxoa;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
